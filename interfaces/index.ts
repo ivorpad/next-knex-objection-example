@@ -8,3 +8,8 @@ export type User = {
   id: number
   name: string
 }
+
+export interface Post {
+  title: string;
+  content: string;
+}
