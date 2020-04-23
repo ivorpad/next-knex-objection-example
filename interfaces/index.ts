@@ -10,6 +10,12 @@ export type User = {
 }
 
 export interface Post {
+  id?: number;
   title: string;
   content: string;
+}
+
+export interface IndexProps {
+  posts: Post[];
+  name: string;
 }

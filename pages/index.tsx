@@ -1,15 +1,16 @@
 import Link from "next/link";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Layout from "../components/Layout";
 import { Posts } from "../config/models/posts.model";
-import { Post } from "../interfaces";
+import { Post, IndexProps } from "../interfaces";
+import * as redis from "async-redis";
+const client = redis.createClient();
 
-const IndexPage = (props: any) => {
-  let { posts }: { posts: any } = props;
-
+const IndexPage = (props: IndexProps) => {
+  let { posts, name } = props;
   return (
-    <Layout title="Home | Next.js + TypeScript Example">
-      <h1>Hello Next.js 👋</h1>
+    <Layout title={`Home | ${name || "Next.js"} + TypeScript Example`}>
+      <h1>Hello {name || "Next.js"} 👋</h1>
       <p>
         <Link href="/post/new">
           <a>Create Post</a>
@@ -32,11 +33,14 @@ const IndexPage = (props: any) => {
   );
 };
 
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
+  
   const posts = await Posts.query();
+  const name = await client.get("name");
   return {
     props: {
       posts: JSON.parse(JSON.stringify(posts)),
+      name,
     },
   };
 };
