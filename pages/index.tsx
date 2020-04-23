@@ -7,7 +7,7 @@ import * as redis from "async-redis";
 const client = redis.createClient();
 
 const IndexPage = (props: IndexProps) => {
-  let { posts, name } = props;
+  let { posts, name, count } = props;
   return (
     <Layout title={`Home | ${name} + TypeScript Example`}>
       <h1>Hello {name} 👋</h1>
@@ -16,6 +16,8 @@ const IndexPage = (props: IndexProps) => {
           <a>Create Post</a>
         </Link>
       </p>
+
+      <h3>Count of posts: {count} (from redis)</h3>
 
       {posts.map((post, idx) => {
         return (
@@ -34,13 +36,19 @@ const IndexPage = (props: IndexProps) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  
   const posts = await Posts.query();
   const name = await client.get("name");
+  const count = await client.get("post:count");
+
+  if(posts.length !== +count) {
+    await client.set("post:count", posts.length)
+  }
+  
   return {
     props: {
       posts: JSON.parse(JSON.stringify(posts)),
       name: name ? name : "Next.js",
+      count: count || posts.length,
     },
   };
 };

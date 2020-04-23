@@ -18,4 +18,5 @@ export interface Post {
 export interface IndexProps {
   posts: Post[];
   name: string;
+  count: number;
 }
