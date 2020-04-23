@@ -9,8 +9,8 @@ const client = redis.createClient();
 const IndexPage = (props: IndexProps) => {
   let { posts, name } = props;
   return (
-    <Layout title={`Home | ${name || "Next.js"} + TypeScript Example`}>
-      <h1>Hello {name || "Next.js"} 👋</h1>
+    <Layout title={`Home | ${name} + TypeScript Example`}>
+      <h1>Hello {name} 👋</h1>
       <p>
         <Link href="/post/new">
           <a>Create Post</a>
@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {
       posts: JSON.parse(JSON.stringify(posts)),
-      name,
+      name: name ? name : "Next.js",
     },
   };
 };
