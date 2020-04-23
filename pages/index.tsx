@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import Layout from "../components/Layout";
 import { Posts } from "../config/models/posts.model";
 import { Post } from "../interfaces";
 
 const IndexPage = (props: any) => {
-  let { posts }: { posts: Post[] } = props;
+  let { posts }: { posts: any } = props;
 
   return (
     <Layout title="Home | Next.js + TypeScript Example">
@@ -19,7 +19,11 @@ const IndexPage = (props: any) => {
       {posts.map((post, idx) => {
         return (
           <article key={idx}>
-            <h3>{post.title}</h3>
+            <h3>
+              <Link href="/post/[id]" as={`/post/${post.id}`}>
+                <a>{post.title}</a>
+              </Link>
+            </h3>
             <p>{post.content}</p>
           </article>
         );
@@ -28,7 +32,7 @@ const IndexPage = (props: any) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps = async () => {
   const posts = await Posts.query();
   return {
     props: {
